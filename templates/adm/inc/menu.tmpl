@@ -1,0 +1,22 @@
+<ul id="collapsible" class="menu y-depth-2 collapsible">
+  <li class="menu_eline"></li>
+
+{# Если многомерный массив, субкатегория #}
+{% for menu_key, menu_name in menu %}
+  <li>
+    <a href="/admin/{{ menu_key }}" class="menu_item{{ menu_key == current ? ' activated' }}">
+      <div class="menu_offset"></div>
+      <div class="{{ menu_key }} menu_img"></div>
+      <div class="menu_text">{{ menu_name }}</div>
+    </a>
+  </li>
+{% endfor %}
+
+  <li>
+    <a href="/admin/logout" class="menu_item footer">
+      <div class="menu_offset"></div>
+      <div class="exit menu_img"></div>
+      <div class="menu_text">Выход</div>
+    </a>
+  </li>
+</ul>

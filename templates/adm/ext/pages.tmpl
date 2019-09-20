@@ -1,0 +1,514 @@
+{% extends '/templates/adm/admin.tmpl' %}
+
+{% set new_tmpl = 
+'<tr class="edit">
+  <td class="mdl-data-table__cell">
+    <i class="table_icons material-icons" style="cursor: default">new_releases</i>
+  </td>
+  <td class="mdl-data-table__cell--non-numeric pages_title input-field">
+    <input placeholder="Название страницы" name="pages_title" id="pages_title" type="text" class="materialize valid" maxlength="45">
+  </td>
+  <td class="mdl-data-table__cell--non-numeric pages_alias input-field">
+    <input placeholder="URL страницы" name="pages_alias" id="pages_alias" type="text" class="materialize valid" maxlength="45">
+  </td>
+  <td class="mdl-data-table__cell--non-numeric template_name input-field">
+    <select name="pages_tmpl" class="new_template"><option value="" disabled>Выбор шаблона</option></select>
+  </td>
+  <td class="mdl-data-table__cell--non-numeric date"></td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <div class="switch tables_switch">
+      <label class="for_switch" for="new_switch">
+        <input type="checkbox" name="pages_status" value="1" class="mdl-switch__input pages_status pages_switch" data-status="1" id="new_switch" checked>
+        <span class="lever"></span>
+      </label>
+    </div>
+  </td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <i class="table_icons material-icons disabled noselect">delete</i>
+    <i class="table_icons material-icons edit_page disabled noselect">edit</i>
+    <i class="table_icons material-icons disabled noselect">content_copy</i>
+    <i class="table_icons material-icons disabled noselect">reorder</i>
+  </td>
+</tr>'
+%}
+
+{% block head_title %}
+  {{- parm == 'unpublish' ? 'Неопубликованные' : 'Страницы' -}}
+{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block title %}
+  <a href="/admin/{{ current }}/">Страницы</a>
+  {{- parm == 'unpublish' ? ' / Неопубликованные' : '' -}}
+{% endblock %}
+
+
+{% block buttons %}
+  <div class="button_cont">
+    <button id="add_button" class="btn-floating btn-large waves-effect waves-light tooltipped active"
+      data-position="top" data-tooltip="Добавить страницу">
+      <i class="material-icons noselect">add</i>
+    </button>
+  </div>
+  
+  <div class="button_cont">
+    <a href="/admin/{{ current }}/{{- parm != 'unpublish' ? 'unpublish/' -}}">
+      <button id="view_button" class="btn-floating btn-large waves-effect waves-light tooltipped active" data-position="top"  data-tooltip="
+        {{- parm == 'unpublish' ? 'Скрыть' : 'Неопубликованные' -}}">
+        <i class='material-icons noselect'>{{- parm == 'unpublish' ? 'visibility_off' : 'visibility' -}}</i>
+      </button>
+    </a>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+  <div id="mdl-table" class="content">
+    <div id="mdl-list_filter" class="dataTables_filter input-field">
+      <label>
+        <i class="material-icons prefix">search</i>
+        <input id="search" type="search" placeholder="Поиск" aria-controls="mdl-list">
+      </label>
+    </div>
+    <table id="mdl-list" class="mdl-data-table mdl-js-data-table highlight z-depth-2">
+        <thead>
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="pages_id">
+                #<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="pages_title">
+                Название<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="pages_alias">
+                URL<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="template_name">
+                Шаблон<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="pages_dt">
+                Последние изменения<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric noselect">Опубликовать</th>
+            <th class="mdl-data-table__cell--non-numeric nosort noselect">Управление</th>
+          </tr>
+        </thead>
+        <tbody class="list">
+            <tr>
+              <td class="mdl-data-table__cell pages_id"></td>
+              <td class="mdl-data-table__cell--non-numeric pages_title"></td>
+              <td class="mdl-data-table__cell--non-numeric pages_alias"></td>
+              <td class="mdl-data-table__cell--non-numeric template_name"></td>
+              <td class="mdl-data-table__cell--non-numeric pages_dt"></td>
+              <td class="mdl-data-table__cell--non-numeric">
+                  <div class="switch tables_switch">
+                    <label class="for_switch">
+                      <input type="checkbox" class="mdl-switch__input pages_status pages_switch">
+                      <span class="lever"></span>
+                    </label>
+                  </div>
+              </td>
+              <td class="mdl-data-table__cell--non-numeric">
+                  <i class="table_icons material-icons noselect tooltipped" 
+                    data-position="top" data-tooltip="Удалить">delete</i>
+                  <i class="table_icons material-icons noselect tooltipped" 
+                    data-position="top" data-tooltip="Клонировать">content_copy</i>
+                  <i class="table_icons material-icons edit_page noselect tooltipped" 
+                    data-position="top" data-tooltip="Редактировать">edit</i>
+                  <i class="table_icons material-icons noselect tooltipped" 
+                    data-position="top" data-tooltip="Изменить порядок">reorder</i>
+              </td>
+            </tr>
+        </tbody>
+        <tbody id="noresult">
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric" style="text-align: center;" colspan="7">
+              Поиск не дал результатов
+            </td>
+          </tr>
+        </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+
+{% block js %}
+  <script src="/js/adm/list.js"></script>
+  <script src="/js/adm/json.js"></script>
+  <script src="/js/adm/jquery-ui.min.js"></script>
+  <script src="/js/adm/CyrillicToTranslit.js"></script>
+
+  <script>
+    var title_list = [], url_list = ['admin']; // Empty arrays for validations
+
+    $.each(values, function( i, object ) { 
+      $.each(object, function( property, value ) {
+        switch (property){
+          case 'pages_title':
+            title_list.push(value);
+            break
+          case 'pages_alias':
+            url_list.push(value);
+            break
+          default:
+        }
+      });
+    });
+
+    var value_tmp = [ // Classes / keys for list.js 
+      'pages_id',
+      'pages_title',
+      'pages_alias',
+      'pages_dt',
+      'template_name',
+      {name: 'pages_status', attr: 'data-status'},
+      {name: 'pages_switch', attr: 'id'},
+      {name: 'for_switch', attr: 'for'}
+    ];
+
+    var list_options = { // List.js options
+      valueNames: value_tmp,
+      fuzzySearch: {
+        searchClass: 'fuzzy-search',
+        location: 0,
+        distance: 100,
+        threshold: 0.3,
+        multiSearch: true
+       }
+    };
+
+
+    if ( $(values).length > 0 ) {  // List.js init if have results
+      var listjs = new List('mdl-list', list_options);
+      listjs.clear();
+      listjs.add(values);
+
+      // List.js styles after init
+      $('#mdl-list_filter').css({"visibility":"visible", "opacity":"1"});
+      $( ".pages_switch" ).each(function( index ) {
+        if ( $(this).attr('data-status') == true )
+          $(this).attr('checked', '');
+      });
+
+      listjs.on('updated', function() {
+        if ( listjs.matchingItems.length > 0 ) {
+          $('#noresult').hide();
+          $('.list').show()
+        }
+        else {
+          $('#noresult').show()
+          $('.list').hide()
+        }
+      })
+
+      $('#search').on('keyup paste', function() { // Search
+        var searchString = $(this).val();
+        listjs.fuzzySearch(searchString);
+      })
+    }
+
+    else { // Show dummy info if not
+      $('.list').empty().append(''
+        + '<tr>' 
+          + '<td class="mdl-data-table__cell--non-numeric" style="text-align: center;" colspan="7">'
+            + 'В данный момент, нет созданных/неопубликованных страниц'
+          + '</td>'
+        + '</tr>');
+    }
+
+
+    $('.material-icons').on('click touchstart', function() { // Material buttons functions delete, copy, etc
+      if ( $(this).hasClass('disabled') )
+        return;
+
+      var parent_row = $(this).parents('tr');
+      var do_func = $(this).text();
+
+      switch (do_func){
+        case 'add':
+          add_new();
+          break;
+        case 'edit':
+          edit(parent_row);
+          break;
+        case 'content_copy':
+          console.log('copy');
+          break;
+        case 'delete':
+          ask(parent_row);
+          break;
+        case 'save':
+          upd('_new'); // Send ajax form
+          break;
+        case 'reorder':
+          reorder();
+          break;
+        default:
+          console.log('nothing to do');
+      }
+    })
+
+
+    function add_new () { // Add new page function
+      listjs.search();
+      $('#search').val('');
+      $('.material-tooltip').css("visibility", "hidden"); // Hide tooltip
+      $('.table_icons').addClass('disabled'); // Disable copy/delete
+      $('#mdl-list').removeClass('highlight'); // Change table view
+      $('.pages_switch, #search').attr('disabled', 'disabled'); // Disable search
+      $('tbody.list').prepend('{{new_tmpl|e('js')}}'); // Twig template for add page
+      
+      var current_time = date_format(Date.now());
+      $('.date').append(current_time);
+      $('.nav_name').append(' / Новая страница');
+      $.each(values2, function( index, value ) { // Templates list
+        opt_val = '<option value="' + index + '">' + value + '</option>'
+        $(".new_template").append(opt_val);
+      });
+      $('select').css('display','none').formSelect();
+
+      var parm_to_form = '<input type="hidden" name="parm" value="add">'
+        + '<input type="hidden" name="pages_status" value="0">';
+      $('#mdl-table').wrap('<form class="prod_form" id="form_new" action=""'  
+        + ' enctype="multipart/form-data" method="post"></form>');
+      $("#form_new").prepend(parm_to_form);
+      change_hint_buttons( false );
+      check_titles( false, false );
+    }
+
+
+    function edit ( parent_row ) { // Edit pages
+        var id = parent_row.children('.pages_id').text();
+        var opt_val = '';
+        var title_input = parent_row.children('.pages_title');
+        var title_val = title_input.text();
+        var alias_input = parent_row.children('.pages_alias');
+        var alias_val = alias_input.text();
+        var template_name = parent_row.children('.template_name');
+        var template_val = template_name.text();
+
+        var status_switch = parent_row.children('.pages_switch');
+        var pages_id = parent_row.find('.pages_id').text();
+        var pages_status = parent_row.find('.pages_status');
+
+        var parm_to_form = '<input type="hidden" name="parm" value="edit">'
+          + '<input type="hidden" name="pages_id" value="' + pages_id + '">'
+          + '<input type="hidden" name="pages_status" value="0">';
+        $('#mdl-table').wrap('<form class="prod_form" id="form_new" action=""'  
+          + ' enctype="multipart/form-data" method="post"></form>');
+        $("#form_new").prepend(parm_to_form);
+
+        $('.nav_name').append(' / Редактировать');
+        $('.pages_switch, #search').attr('disabled', 'disabled');
+        $('#mdl-list').removeClass('highlight');
+        parent_row.addClass('edit');
+
+        title_input.add(alias_input).add(template_name).addClass('input-field').empty();
+        title_input.append('<input placeholder="Название страницы" name="pages_title" '
+          + 'id="pages_title" type="text" class="materialize valid" maxLength="45">');
+        alias_input.append('<input placeholder="URL страницы" name="pages_alias" id="pages_alias" ' 
+          + 'type="text" class="materialize valid" maxLength="45">');
+        $('#pages_title').val(title_val);
+        $('#pages_alias').val(alias_val);
+
+        template_name.append(''
+          + '<select name="pages_tmpl" id="select_template"><option value="" disabled>Выбор шаблона</option>'
+          + '</select>');
+
+        $.each(values2, function( index, value ) {
+          opt_val = '<option value="' + index + '"' 
+            + ( value == template_val ? " selected>" : ">") + value + '</option>';
+          $("#select_template").append(opt_val);
+        });
+
+        pages_status.removeAttr('disabled').attr({ name:"pages_status", value:"1" });
+        $('.table_icons').add(pages_status).addClass('disabled');
+        $('select').css('display','none').formSelect();
+
+        change_hint_buttons( true );
+        check_titles( title_val, alias_val );
+    }
+
+    function reorder(){
+      $('.nav_name').append(' / Изменить порядок'); // Title
+      $('.pages_switch, #search').attr('disabled', 'disabled'); // Disable search and switch
+      listjs.search(); // Empty filter
+      $('#search').val(''); // Empty search field
+      $('.table_icons').addClass('disabled'); // Disable icons functions
+      $('button.sort').contents().unwrap(); // Disable sort
+      $('.list').sortable(); // Move elements 
+
+      // Make save button
+      $('#buttons .button_cont:first-child').empty();
+      $('#view_button').unwrap().attr('data-tooltip', 'Cохранить');
+      $('#view_button .material-icons').text('save');
+
+      // Change hints info
+      $('#hint_list').add('#hint_checked').empty().append('<ul><li></li><li></li><li></li></ul>');
+      $('#hint_list ul li:first-child').text('1. Измените порядок элементов');
+      $('#hint_list ul li:nth-child(2)').text('2. Сохраните результаты');
+      $('#hint_checked ul li').empty().append('<br/>');
+
+      // Make form
+      $('#mdl-table').wrap('<form class="prod_form" id="form_new" action=""'  
+        + ' enctype="multipart/form-data" method="post"></form>');
+      $("#form_new").prepend('<input type="hidden" name="parm" value="edit">'
+        + '<input type="hidden" name="move_pages" value="1">');
+      $('.pages_alias').each(function (index, item) {
+        var id = $(this).parents('tr').find('.pages_id').text();
+        $(this).append('<input type="hidden" name="pages_alias[' + index +']" value="' + id + ' ' + $(item).text() + '">');
+      })
+    }
+
+    function change_hint_buttons( from_edit ){
+      $('button.sort').contents().unwrap(); // Remove sorting
+      $('#buttons .button_cont:first-child').empty();
+      $('#view_button').unwrap().addClass('noselect inactive disabled').attr('data-tooltip', 'Cохранить');
+      $('#view_button .material-icons').text('save');
+
+      $('.tooltipped').tooltip();
+      $('#hint_list').add('#hint_checked').empty().append('<ul><li></li><li></li><li></li></ul>');
+      $('#hint_list ul li:first-child').text('1. Укажите название');
+      $('#hint_list ul li:nth-child(2)').text('2. Укажите адресс');
+      $('#hint_list ul li:nth-child(3)').text('3. Выберете шаблон');
+
+      if ( from_edit ){
+        $('#hint_checked ul li:first-child').empty().append('<i class="material-icons">done</i>');
+        $('#hint_checked ul li:nth-child(2)').empty().append('<i class="material-icons">done</i>');
+      }
+
+      else
+        $('#hint_checked ul li').empty().append('<br/>');
+
+      $('#hint_checked ul li:nth-child(3)').empty().append('<i class="material-icons">done</i>');
+    }
+
+
+    function check_titles( orig_title, orig_alias ) { // Input validation
+      var title_check = $('#hint_checked ul li:first-child').text();
+      var url_check = $('#hint_checked ul li:nth-child(2)').text();
+      var button = $('#view_button');
+      title_check == 'done' && url_check == 'done' ? button.removeClass('inactive disabled') : button.addClass('inactive disabled');
+
+      $('form#form_new').on('change paste', function() {
+        var title_check = $('#hint_checked ul li:first-child').text();
+        var url_check = $('#hint_checked ul li:nth-child(2)').text();
+        var button = $('#view_button');
+        title_check == 'done' && url_check == 'done' ? button.removeClass('inactive disabled') : button.addClass('inactive disabled');
+      })
+
+      $('input#pages_title').add('input#pages_alias').on('change paste', function() {
+        switch ( $(this).attr('id') ){
+          case 'pages_title':
+            var val_text = $(this).val();
+            var hint = $('#hint_checked ul li:first-child');
+            var orig = orig_title;
+            var exist_list = title_list;
+            var reg = new RegExp(/[^a-zа-яё0-9\s\.\-]/gi);
+            var alert_msg = 'Данное имя страницы - не уникально, пожалуйста укажите другое.';
+            break;
+          case 'pages_alias':
+            var val_text = cyrillicToTranslit().transform($.trim($(this).val()), '-').toLowerCase();
+            var hint = $('#hint_checked ul li:nth-child(2)');
+            var orig = orig_alias;
+            var exist_list = url_list;
+            var reg = new RegExp(/[^a-z0-9\s\-]/gi);
+            var alert_msg = 'Данный адресс страницы - не уникален, пожалуйста укажите другой';
+            break;
+          default:
+        }
+
+        $(this).removeClass('valid');
+        var regex = val_text.trim().replace(reg, '').replace(/[\s]+/ig, ' ');
+        $(this).val(regex);
+
+        if ( $(this).val() !== '' && ( orig == $(this).val() || exist_list.indexOf($(this).val()) == -1 ) ){
+          $(this).removeClass('invalid').addClass('valid');
+          hint.empty().append('<i class="material-icons">done</i>');
+          var alias = $('input#pages_alias');
+          var title = $('input#pages_title');
+
+          if ( alias.val().length <= 1 && title.val().length >= 1){
+            var translate = cyrillicToTranslit().transform($.trim(title.val()), '-').toLowerCase();
+            alias.val(translate);
+            $('#hint_checked ul li:nth-child(2)').empty().append('<i class="material-icons">done</i>');
+            $(alias).removeClass('invalid').addClass('valid');
+          }
+        }
+
+        else {
+          if ( $(this).val() !== '' ) 
+            alert( alert_msg ); //+ ' Index: ' + exist_list.indexOf($(this).val())
+
+          $(this).addClass('invalid');
+          hint.empty().append('<br/>');
+        }
+      })
+    }
+
+
+    $('.pages_switch').on('change', function() { // Upd status function
+      if ( $(this).hasClass('disabled') )
+        return;
+
+      var parent_row = $(this).parents('tr');
+      var id = parent_row.children('.pages_id').text();
+      var alias = parent_row.children('.pages_alias').text();
+      var status = $(this).attr('data-status') == false ? 1 : 0;
+      var upd = id + ' ' + alias + ' ' + status;
+      setTimeout(upd_status, 200, upd);
+    })
+
+
+    function ask(parent_row){
+      var id = parent_row.children('.pages_id').text();
+      var title = parent_row.children('.pages_title').text();
+      var alias = parent_row.children('.pages_alias').text();
+      var post =  id + ' ' + alias;
+      swal({
+        title: 'А вы уверены?',
+        html: 'После удаления, страница "' + title + '" будет недоступна',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#e72365',
+        confirmButtonText: 'Да, удалить!',
+        cancelButtonText: 'Нет, я передумал!',
+      }).then(function () {
+          swal(
+            'Удалено!',
+            'страница "' + title + '" удалена и похоже навсегда',
+            'success'
+          );
+          setTimeout(delete_by, 1500, post);
+          }, function (dismiss) {
+            if (dismiss === 'cancel') {
+              swal({
+                title: 'Отменено',
+                text: 'Фуф, пронесло! :)',
+                type: 'error',
+                showCancelButton: false,
+                timer: 1500
+              });
+            }
+          });
+    };
+
+    $(document).ready(function(){
+      $('#mdl-list').fadeIn( 350, 'swing' );
+    });
+
+  </script>
+{% endblock %}

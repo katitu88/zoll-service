@@ -1,0 +1,168 @@
+{% set menu = {    
+  'seo' : 'SEO',
+  'pages' : 'Страницы',
+  'templates' : 'Шаблоны',
+  'settings' : 'Настройки'
+} %}
+
+{% if hint != '' and hint == 'done'  %}
+    {% set hint_info = {
+      '': '', 
+      'Изменения сохранены': 'done',
+      '': ''}
+    %}  
+{% endif %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+      <meta name="viewport" content="width=1200">
+      <title>{% block head_title %}{{ title }}{% endblock %} - Kubik-Admin</title>
+      <link rel="icon" type="image/png" href="/style/adm/icons/favicon2.png" sizes="96x96">
+      <link rel="stylesheet" href="/style/css/debug/reset.css">
+      <link rel="stylesheet" href="/style/css/debug/materialize.css">
+      <link rel="stylesheet" href="/style/adm/css/sweetalert2.min.css">
+      <link rel="stylesheet" href="/style/adm/css/admin.css">
+      {% block style %}{% endblock %}
+    </head>
+  
+  <body>
+    <div id='countdown'>Logout через: <span>{{ cookie_time|date('i:s') }}</span></div>
+    <div id="menu">
+      <a href="/" class="logo">
+        <img src="/style/adm/icons/logo.svg" alt="{{ title }}" >
+        <span>{{ title }}</span>
+      </a>
+      {% include '/templates/adm/inc/menu.tmpl' %}
+    </div>
+    
+    <div id="header" class="row z-depth-2"></div>
+    
+    <div id="content" class="row">
+      <div class="left_offset col"></div>
+      <div class="offset col"></div>
+        <div id="nav" class="row">
+          <div class="col">
+            <div class="nav_name">{% spaceless %}{% block title %}{% endblock %}{% endspaceless %}</div>
+          </div>
+          <div class="col" style="width: 300px">
+            {% include '/templates/adm/inc/hint.tmpl' %}
+          </div>
+          <div class="col" style="width: 120px">
+            <div id="buttons">
+            {% block buttons %}
+              {% for button, button_url in buttons %}
+                <div class="button_cont">
+                  {% if button == null %}
+                  {% else %}
+                  <a href="{{ button_url }}">
+                    <button class="btn-floating btn-large waves-effect waves-light">
+                      <i class="material-icons">{{ button }}</i>
+                    </button>
+                  </a>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            {% endblock %}
+            </div>
+          </div>
+        </div>
+        <div id="section" class="row">
+          <div class="top_offset"></div>
+          {% block content %}
+          {% endblock %}
+        </div>
+    
+      <div class="offset col"></div>
+    </div>
+
+  <script> // Переменные шаблонизатора
+    var parm = '{{ parm }}';
+    var current = '{{ current }}';
+    var id = '{{ id }}';
+    var cookie_time = +'{{ cookie_time }}';
+    var this_domain = '{{ domain }}';
+    var values = {{ db|json_encode()|raw }};
+    var values2 = {{ db2|json_encode()|raw }};
+  </script>
+
+  <script src="/js/jquery-3.4.0.min.js"></script>
+  <script src="/js/materialize.min.js"></script>
+  <script src="/js/adm/jquery.form.min.js"></script>
+  <script src="/js/adm/core.min.js"></script>
+  <script src="/js/adm/sweetalert2.min.js"></script>
+  <script src="/js/js.cookie-2.2.0.min.js"></script>
+
+  <script>
+    function date_format(timestamp) {
+      var monthNames = [
+        "Января", "Февраля", "Марта",
+        "Апреля", "Мая", "Июня", "Июля",
+        "Августа", "Сентября", "Октября",
+        "Ноября", "Декабря"
+      ];
+      var date = new Date(timestamp);
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      min = min < 10 ? "0" + min : min;
+      hour = hour < 10 ? "0" + hour : hour;
+      return day + ' ' + monthNames[monthIndex] + ' ' + year + ' ' + hour + ':' + min;
+    }
+    
+    var display = document.querySelector('#countdown span');
+    var colaps_options = {
+        accordion: true,    
+      onOpenEnd: function(el){
+        var collaps_index = $(el).attr('id');
+        Cookies.set('last_collaps', collaps_index, {expires : cookie_time, path  : '/', domain  : this_domain });
+      },
+
+      onCloseEnd: function(el){
+        Cookies.set('last_collaps', '', {expires : cookie_time, path  : '/', domain  : this_domain });
+      }
+    };
+
+    function startTimer(duration, display) {
+        var now_timestamp, coundown = '';
+        var start_session = Math.floor(Date.now() / 1000);
+        var end_session = start_session +duration;
+
+        setInterval(function () {
+            now_timestamp = Math.floor(Date.now() / 1000);
+            coundown = end_session - now_timestamp; 
+            minutes = Math.floor(coundown / 60)
+            seconds = Math.floor(coundown % 60);
+    
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+            display.textContent = minutes + ":" + seconds;
+    
+            if (now_timestamp  >= end_session) {
+              display.textContent = 'Goodbye :)';
+              Cookies.remove('id', { path: '/', domain: '.' + this_domain });
+              Cookies.remove('hash', { path: '/', domain: '.' + this_domain });
+              Cookies.remove('sms', { path: '/', domain: '.' + this_domain });
+              window.location.href = '/admin';
+            }
+        }, 1000);
+    }
+
+    //$('.collapsible').collapsible(colaps_options);
+  </script>
+  {% block js %}
+  {% endblock %}
+
+    <script>
+      $(document).ready(function(){
+        startTimer(cookie_time, display);
+        $('.tooltipped').tooltip();
+      });
+   </script> 
+  </body>
+</html>

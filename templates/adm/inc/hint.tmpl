@@ -1,0 +1,28 @@
+<div class="hint">
+  <div id="hint_list" class="hint_list">
+    <ul>
+    {% if hint_info is empty %}  <li><br/></li><li><br/></li><li><br/></li>{% endif %}
+    {% for hint_status, hint_icon in hint_info %}
+      <li>
+        {% if hint_status == '' %}<br/>
+        {% else %}{{ hint_status|raw }}
+        {% endif %}
+      </li>
+    {% else %}  
+    {% endfor %}
+    </ul>
+  </div>
+  <div id="hint_checked" class="hint_checked">
+    <ul>
+    {% if hint_info is empty %}  <li><br/></li><li><br/></li><li><br/></li>{% endif %}
+    {% for hint_status, hint_icon in hint_info %}
+      <li>
+        {% if hint_icon == '' %}<br/>
+        {% else %}<i class="material-icons">{{ hint_icon }}</i>
+        {% endif %}
+      </li>
+    {% else %}  
+    {% endfor %}
+    </ul>
+  </div>
+</div>

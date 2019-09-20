@@ -1,0 +1,208 @@
+{% extends '/templates/adm/admin.tmpl' %}
+
+
+{% set hint_info = {
+  '1. Укажите название': '', 
+  '2. Заполните шаблон': '',
+  '': ''}
+%}
+
+
+{% block style %}
+    <link rel="stylesheet" href="/style/adm/css/ace_theme.css">
+{% endblock %}
+
+
+{% block head_title %}
+  {{- parm == 'edit' ? 'Редактор страниц' : 'Создать страницу' -}}
+{% endblock %}
+
+
+{% block title %}
+  <a href="/admin/{{ current }}/">Страницы</a> / {{- parm == 'edit'? ' Редактировать' : ' Создать' -}}
+{% endblock %}
+
+
+{% block buttons %}
+    <div class="button_cont"></div>
+    <div class="button_cont">
+      <button id="save_button" onclick="upd('_new');" class="btn-floating btn-large waves-effect waves-light tooltipped inactive" data-position="bottom"  data-tooltip="Сохранить">
+        <i class="material-icons">save</i>
+      </button>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+  <form class="prod_form" id="form_new" action="" enctype="multipart/form-data" method="post">
+    <input id="pages_status" type="hidden" name="pages_status" value="0">
+    <div class="prod_offset row"></div>
+    <div class="switch_pages_cont">
+      <div class="switch switch-pages">
+        <label for="switch-on">
+          <input type="checkbox" name="pages_status" value="1" id="switch-on" class="mdl-switch__input" checked>
+            <span class="lever"></span>
+            Опубликовать
+        </label>
+      </div>
+    </div>
+  
+    <div id="info" class="info_pages">
+      <div class="prod_offset row"></div>
+      <div class="row">
+        <div class="col page_cont z-depth-2">
+          <div class="page_title_solid">Имя статьи</div>
+          <div class="page_name">
+            <div class="input-field page_input">
+              <input id="pages_title" name="pages_title" placeholder="Название" class="materialize validate" maxLength="32" ></input>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col prod_horr_offset"></div>
+        
+        <div class="col page_cont z-depth-2">
+          <div class="page_title_solid">Алиас</div>
+          <div class="page_name">
+            <div class="input-field page_input">
+              <input id="pages_alias" name="pages_alias" placeholder="URL страницы" class="materialize validate" maxLength="32" ></input>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="prod_offset row"></div>
+      
+      <div class="ace_cont z-depth-2">
+        <div id="ace">
+        </div>
+      </div>
+
+      <input id="editortext" type='hidden' name='pages_text'>
+      <div class="prod_offset row"></div>
+    </div>
+  </form>
+{% endblock %}
+
+
+{% block js %}
+  <script src="/js/adm/ace/ace.js"></script>
+  <script src="/js/adm/ace/theme-monokai.js"></script>
+  <script src="/js/adm/ace/mode-twig.js"></script>
+  <script src="/js/adm/CyrillicToTranslit.js"></script>
+  <script src="/js/adm/json.js"></script>
+
+  <script>
+    $('#info, #ace').fadeIn( 350, 'swing' );
+    var editor = ace.edit("ace");
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setUseWrapMode(true);
+    editor.setShowPrintMargin(false);
+    var TwigMode = ace.require("ace/mode/twig").Mode;
+    editor.session.setMode(new TwigMode());
+
+/* Кнопка */
+    $('form#form_new').on('change paste', function() {
+      title = $('#hint_checked ul li:first-child').text();
+      chars = $('#hint_checked ul li:nth-child(2)').text();
+      if (title == 'done' && chars == 'done'){
+        $('button#save_button').attr("disabled", false);
+        $('button#save_button').removeClass('inactive').addClass('active');
+      }
+      
+      else {
+        $('button#save_button').attr("disabled", true);
+        $('button#save_button').removeClass('active').addClass('inactive');
+      }
+    });
+  
+/* Заголовок и алиас */
+    $('input#pages_title').add('input#pages_alias').on('change paste', function() { 
+      if ($(this).val() == ''){
+        $(this).addClass('invalid');
+        $('#hint_checked ul li:first-child').empty().append('<br/>');
+      }
+    
+      else {
+        $(this).removeClass('invalid');
+        $('input#pages_alias').removeClass('invalid');
+
+        if ($(this).attr('id') == 'pages_title'){
+          regex = $(this).val().trim().replace(/[^a-zа-яё0-9\s\-]/gi, '').replace(/[\s]+/ig, ' ');
+          translate = cyrillicToTranslit().transform($.trim(regex), '-').toLowerCase();
+          $('input#pages_title').val(regex);
+        }
+
+        else {
+          regex = $(this).val().trim().replace(/[^a-zа-яё0-9\s\-]/gi, '').replace(/[\s]+/ig, ' ');
+          translate = cyrillicToTranslit().transform($.trim(regex), '-').toLowerCase();
+          $('input#pages_alias').val(translate);
+        }
+
+        if ( $('input#pages_alias').val() && $('input#pages_title').val() ){
+          $('#hint_checked ul li:first-child').empty().append('<i class="material-icons">done</i>');
+        }
+      }
+    })
+
+/* Текст */
+    editor.on('change', function() {
+      $('#editortext').val(editor.getValue());
+
+      if ( $('#editortext').val() == '' )
+        $('#hint_checked ul li:nth-child(2)').empty().append('<br/>');
+    
+      else {
+        {% verbatim %}
+        if ($('#editortext').val().indexOf("{% extends '/templates/main.tmpl' %}") >= 0)
+          $('#hint_checked ul li:nth-child(2)').empty().append('<i class="material-icons">done</i>');
+        
+        else{
+          var text = "{% extends '/templates/main.tmpl' %}\n" + $('#editortext').val();
+          $('#editortext').val(text);
+          editor.setValue(text);
+          $('#hint_checked ul li:nth-child(2)').empty().append('<i class="material-icons">done</i>');
+        }
+        {% endverbatim %}
+      }
+    });
+  </script>
+  
+  <script>
+  $(document).ready(function(){
+        var parm_to_form = '<input type="hidden" name="parm" value="{{ parm }}">'
+          + '<input type="hidden" name="current" value="{{ current }}">';
+        $(parm_to_form).insertAfter("#pages_status");
+
+    {% if parm == "edit" %}
+        $("#hint_checked ul li:not(:last-child)").empty().append("<i class='material-icons'>done</i>");
+        $("button#save_button").attr("disabled", false);
+        $("button#save_button").removeClass("inactive").addClass("active");
+        $("input#pages_title").val("{{ db.pages_title }}");
+        $("input#pages_alias").val("{{ db.pages_alias }}");
+        $("<input type='hidden' name='product_id' value='{{ db.pages_id }}'>").insertAfter("#pages_status");
+        $("<input type='hidden' name='orig_alias' value='{{ db.pages_alias }}'>").insertAfter("#pages_status");
+        $("<input type='hidden' name='twig_id' value='{{ db.twig_id }}'>").insertAfter("#pages_status");
+
+        var pages_status = {{ db.pages_status| json_encode | raw }};
+        if (pages_status == false)
+          $('#switch-on').attr('checked', false);
+        var text = {{ db.source| json_encode | raw }};
+    {% else %}
+        {% verbatim %} 
+          var text = "{% extends '/templates/main.tmpl' %} \n" +
+            "\n{% block title %}\n\n{% endblock %}\n" +
+            "\n\n{% block hero %}\n\n{% endblock %}\n" +
+            "\n\n{% block head %}\n\n{% endblock %}\n" +
+            "\n\n{% block meta_description %}\n\n{% endblock %}\n" +
+            "\n\n{% block meta_keywords %}\n\n{% endblock %}\n" +
+            "\n\n{% block content %}\n\n{% endblock %}\n" +
+            "\n\n{% block js %}\n\n{% endblock %}\n";
+        {% endverbatim %}
+        $("button#save_button").attr("disabled", true);
+    {% endif %}
+        $('#editortext').val(text);
+        editor.setValue(text, -1);   
+  });
+  </script>
+{% endblock %}

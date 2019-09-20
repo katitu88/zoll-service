@@ -1,0 +1,254 @@
+{% extends '/templates/main.tmpl' %}1
+
+{% set commercial = ['Российский производитель светодиодного оборудования', 'Более 10-лет на рынке', 'Доступные цены и уникальный ассортимент', '100% Гарантия качества']%}
+
+{% set zhkkh = 'Светильники ЖКХ используются на объектах жилищно — коммунального хозяйства' %}
+{% set prozhektory = 'Светодиодные прожекторы – многофункциональный и экономичный источник направленного или заливающего света' %}
+{% set torgovoye = 
+	'Для торгового освещения используют светильники-даунлайты с направленным светом, трековые светодиодные светильники, устанавливаемые
+ 	на шинопроводе, карданные светильники с направленным светом и регулировкой яркости, обычные модульные светильники, точечные светильники' 
+ %}
+{% set lampy = 
+	'Светодиодные лампы – новый этап в развитии осветительной техники. Главное достоинство светодиодных ламп — это экономичность. 
+	За счёт малого энергопотребления и большого срока службы светодиодные лампы позволят заметно снизить расходы на освещение' 
+%}
+{% set prom = 
+	'Одним из перспективных направлений политики энергосбережения является внедрение промышленного LED-освещения. 
+	В сравнении с традиционными источниками света производственные светодиодные светильники экономят до 70% энергии. 
+	Установка такой осветительной системы значительно снизит затраты на оплату энергоресурсов и повысит прибыль предприятия' 
+%}
+{% set ofisnoe = 
+	'Сейчас светодиодное оборудование является наиболее популярным решением. Отсутствие пульсации, равномерный световой поток, 
+	значительная экономия электроэнергии, экологическая безопасность являются основными преимуществами применения современных технологий. 
+	Офисное светодиодное освещение обеспечивает максимальный комфорт для глаз, что в свою очередь повышает производительность сотрудников предприятия'
+%}
+
+{% block hero %}
+    <div class="parallax-container row">
+		<div class="rellax layer-bg" style="background-image: url(/img/backgrounds/sky.jpg)" data-parallaxify-background-range-y="300"></div>
+		<div class="col" id="board">
+			<img id="night" class="rellax layer-board" src="/img/backgrounds/day2.png">
+			<img id="light" class="rellax layer-board" src="/img/backgrounds/night3.png">
+		</div>
+		<div class="col right-text-wrap">
+			<div id="right-text" class="right-text">
+				<div class="animated first">
+					{{ commercial[0] }}
+				</div>
+				<div class="animated">
+					{{ commercial[1] }}
+				</div>
+				<div class="animated">
+					{{ commercial[2] }}
+				</div>
+				<div class="animated">
+					{{ commercial[3] }}
+				</div>
+			</div>
+		</div>
+    </div>
+{% endblock %}
+
+{% block content %}
+	<section class="row">
+		<div class="col content-offset"></div>
+		<div class="col center">
+			<div class="row">
+				<div id="products-top" class="row">
+					<h3 class="block-tittle">Каталог <span>Нашей</span> продукции</h3>
+					<!-- Metro Grid -->
+					<div class="row" id="tiles">
+						<div class="col">
+							<div class="tile-group-left-top">
+								<div class="row tile-group-left1">
+									<div class="col tile animated" id="tile1">
+										<div class="tile-background display_img" data-src="/img/tiles/zhkkh.jpg"></div>
+										<div class="tile-title title-left">ЖКХ</div>
+										<a href="/{{ catalog }}/zhkkh/">
+											<div class="tile-text">
+												<span class="animated noselect">
+													<p>{{ zhkkh }}</p>
+												</span>
+											</div>
+										</a>
+									</div>
+									<div class="col left-tile-col-offset"></div>
+										<div class="col tile animated" id="tile2">
+											<div class="tile-background display_img" data-src="/img/tiles/projectors.jpg"></div>
+											<div class="tile-title title-right">Прожекторы</div>
+											<a href="/{{ catalog }}/prozhektory/">
+												<div class="tile-text">
+													<span class="animated noselect">
+														<p>{{ prozhektory }}</p>
+													</span>
+												</div>
+											</a>
+										</div>
+								</div>
+								
+								<div class="row tile-row-offset"></div>
+									
+								<div class="row tile animated" id="tile3">
+									<div class="tile-background display_img" data-src="/img/tiles/trade.jpg"></div>
+									<div class="tile-title title-bottom-left">Торговое освещение</div>
+									<a href="/{{ catalog }}/torgovoye-osveshcheniye/">
+										<div class="tile-text">
+											<span class="animated noselect">
+												<p>{{ torgovoye }}</p>
+											</span>
+										</div>
+									</a>
+								</div>
+							</div>
+			
+							<div class="row tile-row-offset"></div>
+								
+							<div class="row tile-group-left2 tile animated" id="tile4">
+								<div class="tile-background display_img" data-src="/img/tiles/lamp.jpg"></div>
+								<div class="tile-title title-right">Светодиодные лампы</div>
+								<a href="/{{ catalog }}/svetodiodnyye-lampy/">
+									<div class="tile-text">
+										<span class="animated noselect">
+											<p>{{ lampy }}</p>
+										</span>
+									</div>
+								</a>
+							</div>
+						</div>
+						
+						<div class="col tile-col-offset"></div>
+						
+						<div id="right_tile_group" class="col">
+							<div class="row tile animated" id="tile5">
+								<div class="tile-background display_img" data-src="/img/tiles/industry.jpg"></div>
+								<div class="tile-title title-bottom-left">
+									Промышленное освещение
+								</div>
+								<a href="/{{ catalog }}/promyshlennoye-osveshcheniye/">
+									<div class="tile-text">
+										<span class="animated noselect">
+											<p>{{ prom }}</p>
+										</span>
+									</div>
+								</a>
+							</div>
+							
+							<div class="row tile-row-offset"></div>
+							
+							<div class="row tile animated" id="tile6">
+								<div class="tile-background display_img" data-src="/img/tiles/office.jpg"></div>
+								<div class="tile-title title-right">Офисное освещение</div>
+								<a href="/{{ catalog }}/ofisnoe-osveshcheniye/">
+									<div class="tile-text">
+										<span class="animated noselect">
+											<p>{{ ofisnoe }}</p>
+										</span>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- Metro Grid End -->
+				</div>
+			</div>
+
+		</div>
+		<div class="col content-offset"></div>
+	</section>
+
+	<div class="row top-offset"></div>
+	<div class="row tear">
+		<div class="company-text-wrapper row">
+			<div class="col tear-offset"></div>
+			<div class="col company-text">
+				<div class="company-text-cont">
+					<p>Наша компания более 10-лет является ведущим производителем светодиодного оборудования в России, а также осуществляет полный цикл услуг по проектированию и монтажу светодиодного освещения.</p>
+					<p>Мы регулярно расширяем ассортимент и совершенствуем технологию производства, что бы продукция нашей компании оставалась не только самой передовой, но и самой доступной на отечественном рынке.</p>
+					<p>Мы гордимся тем, что внутренние стандарты качества нашей компании, соответствуют самым взыскательным ожиданиям клиентов:</p>
+					<ul>
+						<li>Мы используем только экологически безопасные материалы</li>
+						<li>Производим точные настройки своих драйверов, плат и светодиодов</li>
+						<li>Проверяем на соответствие каждой единицы товара с указанными нами характеристиками</li>
+						<li>Гарантируем отказоустойчивости произведённых светильников, в том числе в условиях высоких температур, механического воздействия или нестабильного напряжения</li>
+					</ul>
+					</div>
+				</div>
+			<div class="col" style="width: 21px;"></div>
+			<div class="col tear_img">
+				<div class="tear_bg container">
+					<div class="rellax layer-tear tear1" style="background-image: url(/img/backgrounds/dude-min.jpg);" data-parallaxify-background-range-y="300"></div>
+				</div>
+			</div>
+			<div class="col tear-offset"></div>
+		</div>
+		<div class="parallax-container tear-wrapper1">
+			<div class="tear-shape-top">
+				<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMin slice" viewBox="0 0 1900 98"><defs><style>.tear_a{fill:#fffefb;}</style>
+					</defs><polygon class="tear_a" points="0,0 0,3 0,3 0,98 1900,3 1900,3 1900,0"></polygon>
+				</svg>
+
+			</div>
+			<div class="tear-shape-bottom">
+				<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMin slice" viewBox="0 0 1900 98"><defs><style>.tear_a{fill:#fffefb;}</style>
+					</defs><polygon class="tear_a" points="1900,98 1900,95 1900,95 1900,0 0,95 0,95 0,98 "></polygon>
+				</svg>
+			</div>
+		</div>
+	</div>
+
+	<div class="row top-offset"></div>
+	
+	<div id="products-top" class="row">
+        <div class="col content-offset"></div>
+        <div class="col">
+		    <h3 class="block-tittle"><span>Специальные</span> предложения</h3>
+		
+			<div class="row top-offset"></div>
+			<div class="carousel_text">
+	        	<p>Воспользуйтесь формой обратной связи, или позвоните по телефону если хотите узнать подробности.</p>
+		    </div>
+		</div>
+		<div class="col content-offset"></div>
+    </div>
+{% endblock %}
+
+{% block js %}
+	<script>
+
+		$( '.tile' )
+			.on( 'mouseenter', function() {
+				$(this).find('.tile-text').css({'opacity':'1','transition':'all 0.4s ease-out'});
+				$(this).find('.tile-text span').removeClass('fadeOutDown').addClass('fadeInUp');
+			})
+			.on( 'mouseleave', function() {
+				$(this).find('.tile-text').css({'opacity':'0','transition':'all 0.4s ease-out'});
+				$(this).find('.tile-text span').removeClass('fadeInUp').addClass('fadeOutDown');
+		});
+
+
+		function change_text (){ // Обновление текста на баннере
+			var previous = null;
+			var offset = null;
+			$( "#right-text .animated" ).each(function(index) {
+				var elm = $(this);
+				setTimeout( function(){
+					if (previous)
+						previous.css('display', 'none');
+					elm.css('display', 'block').addClass( "fadeInUp" );
+					previous = elm;
+				}, 2700 + offset);
+ 				offset += 2700;
+			});
+		};
+		
+		$(document).ready(function(){
+			setTimeout(function() {
+				$("#night").animate({opacity: 0 }, 1000, function(){
+					$(this).remove();
+				});
+    		}, 800);
+    		change_text();
+		});
+
+	</script>	
+{% endblock %}

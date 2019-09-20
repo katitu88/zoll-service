@@ -1,0 +1,32 @@
+.row.paginator {
+  min-width: 1200px;
+  padding-top: 30px;
+}
+
+button.upl_button {
+    border: 0;
+    border-radius: 3px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 500;
+    padding: 10px 32px;
+    float: left;
+    margin-top: 15px;
+    margin-left: 64px;
+    background-color: #3da4dd;
+}
+
+button.upl_button:hover {
+    background-color: #2997d4;
+}
+
+button.swal2-cancel.swal2-styled:focus {
+    outline: none;
+}
+
+h2#swal2-title {
+    font-size: 20px;
+}

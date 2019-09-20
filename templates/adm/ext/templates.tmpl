@@ -1,0 +1,203 @@
+{% extends '/templates/adm/admin.tmpl' %}
+
+{% block head_title %}Шаблоны{% endblock %}
+
+
+{% block title %}
+  <a href="/admin/{{ current }}/">Шаблоны</a>
+{% endblock %}
+
+
+{% block buttons %}
+  <div class="button_cont">
+  </div>
+  
+  <div class="button_cont">
+    <a href="/admin/{{ current }}/add/">
+      <button id="add_button" class="btn-floating btn-large waves-effect waves-light tooltipped active"
+      data-position="top" data-tooltip="Добавить шаблон">
+        <i class="material-icons noselect">add</i>
+      </button>
+    </a>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+  <div id="mdl-table" class="content">
+    <div id="mdl-list_filter" class="dataTables_filter input-field">
+      <label>
+        <i class="material-icons prefix">search</i>
+        <input id="search" type="search" placeholder="Поиск" aria-controls="mdl-list">
+      </label>
+    </div>
+    <table id="mdl-list" class="mdl-data-table mdl-js-data-table highlight z-depth-2">
+        <thead>
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="twig_id">
+                #<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="name">
+                Имя шаблона<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric">
+              <button type="button" class="sort noselect" data-sort="last_modified">
+                Последние изменения<i class="caret"></i>
+              </button>
+            </th>
+            <th class="mdl-data-table__cell--non-numeric nosort noselect">Управление</th>
+          </tr>
+        </thead>
+        <tbody class="list">
+            <tr>
+              <td class="mdl-data-table__cell twig_id"></td>
+              <td class="mdl-data-table__cell--non-numeric template_name"></td>
+              <td class="mdl-data-table__cell--non-numeric last_modified"></td>
+              <td class="mdl-data-table__cell--non-numeric">
+                  <i style="cursor: pointer;" class="table_icons material-icons">delete</i>
+                  {#<i style="cursor: pointer;" class="table_icons material-icons">content_copy</i>#}
+                  <i style="cursor: pointer;" class="table_icons material-icons edit_page">edit</i>
+              </td>
+            </tr>
+        </tbody>
+        <tbody id="noresult">
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric" style="text-align: center;" colspan="7">
+              Поиск не дал результатов
+            </td>
+          </tr>
+        </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+
+{% block js %}
+  <script src="/js/adm/list.js"></script>
+  <script src="/js/adm/json.js"></script>
+
+  <script>
+    var values = {{ db|json_encode()|raw }};
+
+    var value_tmp = [
+      'twig_id',
+      'template_name',
+      'last_modified',
+    ];
+
+    var list_options = { // List.js settings
+      valueNames: value_tmp,
+      fuzzySearch: {
+        searchClass: 'fuzzy-search',
+        location: 0,
+        distance: 100,
+        threshold: 0.3,
+        multiSearch: true
+       }
+    };
+
+    if ( $(values).length > 0 ) {
+      var listjs = new List('mdl-list', list_options); // List.js init
+    }
+
+    else {
+      $('.list').empty().append(
+        + '<tr>' 
+          + '<td class="mdl-data-table__cell--non-numeric" style="text-align: center;" colspan="7">'
+            + 'В данный момент, нет созданных/неопубликованных шаблонов'
+          + '</td>'
+        + '</tr>');
+    }
+
+    if (listjs) {
+      listjs.clear();
+      listjs.add(values);
+      $('#mdl-list_filter').css({"visibility":"visible", "opacity":"1"});
+
+      $( ".pages_switch" ).each(function( index ) {
+        if ( $(this).attr('data-status') == true )
+          $(this).attr('checked', '');
+      });
+
+      listjs.on('updated', function() {
+        if (listjs.matchingItems.length > 0){
+          $('#noresult').hide();
+          $('.list').show()
+        }
+        else {
+          $('#noresult').show()
+          $('.list').hide()
+        }
+      })
+
+      $('.table_icons').on('click touchstart', function() {
+        var parent_row = $(this).parents('tr');
+        var id = parent_row.children('.twig_id').text();
+        var alias = parent_row.children('.template_name').text();
+        var do_func = $(this).text();
+
+        switch (do_func){
+          case 'edit':
+            var redirect_edit = '/admin/' + current + '/edit/id-' + id;
+            window.location.href = redirect_edit;
+          break;
+          case 'content_copy':
+            console.log('copy');
+          break;
+          case 'delete':
+            ask(id, alias);
+          break;
+          default:
+            console.log('nothing to do');
+        }
+        //setTimeout(upd_status, 200, upd);
+      })
+
+      $('#search').on('keyup paste', function() { // Search field
+        var searchString = $(this).val();
+        listjs.fuzzySearch(searchString);
+      })
+    }
+
+
+    function ask(id, name){
+      swal({
+        title: 'А вы уверены?',
+        html: 'После удаления, шаблон "' + name + '" будет недоступен',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#e72365',
+        confirmButtonText: 'Да, удалить!',
+        cancelButtonText: 'Нет, я передумал!',
+        }).then(function () {
+          swal(
+          'Удалено!',
+          'шаблон "' + name + '" удален и похоже навсегда',
+          'success'
+          );
+          setTimeout(delete_by, 1500, id + ' '+ name);
+        
+        }, function (dismiss) {
+          if (dismiss === 'cancel') {
+            swal({
+              title: 'Отменено',
+              text: 'Фуф, пронесло! :)',
+              type: 'error',
+              showCancelButton: false,
+              timer: 1500
+            });
+            }
+        });
+    };
+  
+    $(document).ready(function(){
+      $('#mdl-list').fadeIn( 350, 'swing' );
+    });
+
+  </script>
+{% endblock %}

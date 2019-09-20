@@ -1,0 +1,174 @@
+{% set phone = '034298 13291' %}
+
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=1280">
+    <meta name="robots" content="index, follow"/>
+    <meta name="Description" content="{% block meta_description %}{%- endblock %}"/>
+    <meta name="Keywords" content="{% block meta_keywords %}{% endblock %}"/>
+    <meta name="theme-color" content="#2fa5dd">
+        {% block head %}{% endblock %}
+    <title>{% block title %}{{ menu[current] }}{% endblock %} - {{ title }}</title>
+    {%- if first_page == current -%}
+      <link rel="canonical" href="https://{{domain}}{{ no_url ? '' : '/' ~ first_page }}" />
+    {%- endif -%}
+    <link rel="icon" type="image/png" href="/style/icons/favicon.png">
+    <link rel="stylesheet" href="{{ '/style/' ~ css_path }}reset.css">
+    <link rel="stylesheet" href="{{ '/style/' ~ css_path }}outdatedbrowser.min.css">
+    <link rel="stylesheet" href="{{ '/style/' ~ css_path }}style.css">
+    <link rel="stylesheet" href="{{ '/style/' ~ css_path }}materialize.css">
+    <link rel="stylesheet" href="{{ '/style/' ~ css_path }}animate.css">
+    <link rel="stylesheet" href="{{ '/style/' ~ css_path }}pages.css">
+	<link rel="stylesheet" type="text/css" href="style/css/debug/backgr.css" />
+    {% block style %}{% endblock %}
+  </head>
+  
+  <body>
+  	<!-- Menu -->
+    <div id="top-bar">
+      <div class="menu row z-depth-2">
+          <div class="offset col">
+		  </div>
+          <div class="center col">
+            <div class="logo-container">
+              <a href="/">
+                <div class="nav-logo">
+                  {{ source("/style/icons/victoria-logo.svg") }}
+                </div>
+              </a>
+            </div>
+            <div class="center-overlay">
+              <div class="menu-items row">
+                <ul>
+                {% for menu_url, menu_name in menu %}
+                  <li class="{{- menu_url == current ? 'active ' -}}{{- menu_url == catalog ? 'catalog-link noselect' -}}">
+                    {%- if menu_url == catalog -%}
+		  			<div class="catalog_cont">{{ menu_name }}
+					</div>
+                      <div class="arrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28.33 9.35">
+                          <polygon points="14 0 0 9.35 28.33 9.35 14 0">
+						  </polygon>
+                        </svg>
+                      </div>  
+                    {%- else -%}
+                      <a href="/{{ menu_url }}">{{ menu_name }}</a>
+                    {%- endif -%}
+                  </li>
+                {% endfor %}
+                  <li style="color: #12a0de;"><i class="material-icons prefix" style="position: absolute; font-size: 16px;">&#xe0b0;</i><span style="padding-left:   20px;">{{ phone }}</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="offset col">
+		  </div>
+        </div>
+        <div class="nav-ovr row">
+		</div>
+      
+      	<div class="submenu row">
+        	<div class="offset col">
+			</div>
+          	{% for submenu_url, submenu_name in sub_exists %}
+            {% set sub_tmpl = "/style/icons/sub/" ~ submenu_url ~ ".svg"  %}
+            <div class="sub-item col">
+              <a href="/{{ catalog }}/{{ submenu_url }}">
+                {% if submenu_url == sub %}
+                <div class="sub-container sub-active-icon">
+                {% else %}
+                <div class="sub-container">
+                {% endif %}
+                  <div class="sub-img">
+                    {{ source(sub_tmpl) }}
+                  </div>
+                  <div class="sub-text">{{submenu_name}}
+				  </div>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        	<div class="offset col">
+			</div>
+      	</div>
+    </div>
+	<backgr class=demo-2>
+		<div class="page-view">
+		
+			<div class="project">
+			</div>
+
+			<div class="project">
+			</div>
+
+			<div class="project">
+			</div>
+
+			<div class="project">
+			</div>
+			<nav1 class="arrows">
+			<div class="arrow previous">
+				<svg viewBox="208.3 352 4.2 6.4">
+					<polygon class="st0" points="212.1,357.3 211.5,358 208.7,355.1 211.5,352.3 212.1,353 209.9,355.1"></polygon>
+				</svg>
+			</div>
+			<div class="arrow next">
+				<svg viewBox="208.3 352 4.2 6.4">
+					<polygon class="st0" points="212.1,357.3 211.5,358 208.7,355.1 211.5,352.3 212.1,353 209.9,355.1"></polygon>
+				</svg>
+			</div>
+			</nav1>
+		</div>
+	</backgr>
+	
+<!-- Header -->
+    <header id="header">
+<!-- hero -->
+
+    </header>
+<!-- content -->
+{% spaceless %}
+
+{% endspaceless %}
+        
+<!-- footer -->
+
+
+    </footer>
+    <div id="outdated">
+      <h6>Ваш браузер устарел!</h6>
+      <p>Обновите ваш браузер для правильного отображения этого сайта. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/ru">Обновить мой браузер</a></p>
+       <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Закрыть">&times;</a></p>
+    </div>
+
+<!-- JS -->  
+    {% if constant('DEBUG') == false %}
+      <script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLHXY40fie6Ei36pWW4bBC0rvlZKSuM84&callback=initMap&language=ru&region=RU">
+      </script>
+    <script defer>
+    (function(){ var widget_id = 'sOtdd35J17';var d=document;var w=window;function l(){
+    var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = '//code.jivosite.com/script/widget/'+widget_id; var ss = document.getElementsByTagName('script')[    0]; ss.parentNode.insertBefore(s, ss);}if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+    </script>
+    {% endif %}
+    <script>
+      var cookie_time = +'{{ cookie_time }}';
+      var this_domain = '{{ domain }}';
+    </script>
+    
+    <script src="/js/jquery-3.4.0.min.js"></script>
+    <script src="/js/lazyload.min.js"></script>
+    <!--<script src="/js/rellax.min.js"></script>-->
+    <!--<script src="/js/debug/main.js"></script>-->
+    <script src="/js/outdatedbrowser.min.js"></script>
+    <script src="/js/jquery.viewportchecker.min.js"></script>
+			<script src="js/zepto.min.js"></script>
+		<script src="js/imagesloaded.pkgd.min.js"></script>
+		<script src="js/demo.js"></script>
+    {% block js %}{% endblock %}
+  </body>
+
+</html>

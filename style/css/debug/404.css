@@ -1,0 +1,113 @@
+/*          Hero          */
+
+html, body {margin: 0; height: 100%; overflow: hidden}
+header {
+  height: 700px;
+    width: 100%;
+}
+
+header .logo {
+  width: inherit;
+  height: inherit;
+  position: absolute;
+  z-index: 2;
+}
+
+header .logo img{
+  height: 5vw;
+  min-height: 100px;
+  max-height: 450px;
+  position: absolute;
+  left: calc(50% + 10px);
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+header .logo .logo-cont {
+  width: inherit;
+  height: inherit;
+  position: relative;
+}
+
+header .hero-banner {
+  width: inherit;
+  height: inherit;
+}
+
+header .hero-banner .video-overlay {
+  width: inherit;
+  height: inherit;
+  background-image: url(/style/icons/vegas/06.png);
+  background-repeat: repeat;
+  position: absolute;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+header .hero-banner video#myVideo {
+  object-fit: cover;
+  width: inherit;
+  height: inherit;
+  position: fixed;
+  z-index: -1;
+}
+
+
+#error h3.block-tittle {
+    font-size: calc(18px + 1vw);
+    line-height: 110%;
+    font-weight: 600;
+    text-align: center;
+    font-family: 'Roboto Slab', serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #2B2B2B;
+}
+
+#error h3.block-tittle span {
+    color: #0378D7;
+}
+
+div#error {
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img svg {
+    width: 30vw;
+}
+
+#logo{
+  fill:url(#grad1)
+}
+
+#svg rect {
+  fill: none;
+}
+
+#stop1 {
+  animation: change-color1 5s ease-in-out infinite alternate;
+}
+
+#stop2 {
+  animation: change-color2 5s ease-in-out infinite alternate;
+}
+
+@keyframes change-color1 {
+  0% {stop-color: #f507fe;}
+  100% {stop-color: #39a9e5;}
+}
+
+@keyframes change-color2 {
+  0% {stop-color: #1bc4e2;}
+  100% {stop-color: #f507fe;}
+}

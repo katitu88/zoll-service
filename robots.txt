@@ -1,0 +1,16 @@
+User-agent: *
+Disallow: /admin
+# Denny access for next dirs
+Disallow: /files
+Disallow: /img
+Disallow: /js
+Disallow: /php
+Disallow: /style
+Disallow: /templates
+# Don't index next pages
+# Disable index other trash
+Disallow: /*?*
+Disallow: /*?
+# Allow index for files
+# Host adress
+Host: test

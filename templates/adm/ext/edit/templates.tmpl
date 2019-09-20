@@ -1,0 +1,181 @@
+{% extends '/templates/adm/admin.tmpl' %}
+
+
+{% set hint_info = {
+  '1. Укажите название': '', 
+  '2. Заполните шаблон': '',
+  '': ''}
+%}
+
+
+{% block style %}
+    <link rel="stylesheet" href="/style/adm/css/ace_theme.css">
+{% endblock %}
+
+
+{% block head_title %}
+  {{- parm == 'edit' ? 'Редактор шаблонов' : 'Создать шаблон' -}}
+{% endblock %}
+
+
+{% block title %}
+  <a href="/admin/{{ current }}/">Шаблоны</a> / {{- parm == 'edit'? ' Редактировать' : ' Создать' -}}
+{% endblock %}
+
+
+{% block buttons %}
+    <div class="button_cont"></div>
+    <div class="button_cont">
+      <button id="save_button" onclick="upd('_tmpl');" class="btn-floating btn-large waves-effect waves-light tooltipped inactive" data-position="bottom"  data-tooltip="Сохранить">
+        <i class="material-icons">save</i>
+      </button>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+  <form class="prod_form" id="form_tmpl" action="" enctype="multipart/form-data" method="post">  
+    <div id="info" class="info_pages">
+      <div class="prod_offset row"></div>
+      <div class="row">
+        <div class="col page_cont z-depth-2">
+          <div class="page_title_solid">Имя шаблона</div>
+          <div class="page_name">
+            <div class="input-field page_input">
+              <input id="pages_title" name="template_name" placeholder="Наименование шаблона, латинскими символами" class="materialize validate" maxLength="32" ></input>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="prod_offset row"></div>
+      
+      <div class="ace_cont z-depth-2">
+        <div id="ace">
+        </div>
+      </div>
+
+      <input id="editortext" type='hidden' name='source'>
+      <div class="prod_offset row"></div>
+    </div>
+  </form>
+{% endblock %}
+
+
+{% block js %}
+  <script src="/js/adm/ace/ace.js"></script>
+  <script src="/js/adm/ace/theme-monokai.js"></script>
+  <script src="/js/adm/ace/mode-twig.js"></script>
+  <script src="/js/adm/CyrillicToTranslit.js"></script>
+  <script src="/js/adm/json.js"></script>
+
+  <script>
+    var orig_name = '{{ parm == "edit" ? db.template_name : '' }}';
+    var exist_templates = [];
+
+    $.each(values2, function( i, object ) {
+        exist_templates.push(object);
+    });
+
+
+
+    $('#info, #ace').fadeIn( 350, 'swing' );
+    var editor = ace.edit("ace");
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setUseWrapMode(true);
+    editor.setShowPrintMargin(false);
+    var TwigMode = ace.require("ace/mode/twig").Mode;
+    editor.session.setMode(new TwigMode());
+
+/* Save button */
+    $('form#form_tmpl').on('change paste', function() {
+      title = $('#hint_checked ul li:first-child').text();
+      chars = $('#hint_checked ul li:nth-child(2)').text();
+      if (title == 'done' && chars == 'done'){
+        $('button#save_button').attr("disabled", false);
+        $('button#save_button').removeClass('inactive').addClass('active');
+      }
+      
+      else {
+        $('button#save_button').attr("disabled", true);
+        $('button#save_button').removeClass('active').addClass('inactive');
+      }
+    });
+  
+/* Check title */
+    $('input#pages_title').on('change paste', function() { 
+      $(this).addClass('invalid');
+      $('#hint_checked ul li:first-child').empty().append('<br/>');
+      regex = $(this).val().trim().replace(/[^a-zа-яё0-9\s\.\-]/gi, '').replace(/[\s]+/ig, ' ');
+      translate = cyrillicToTranslit().transform($.trim(regex), '-').toLowerCase();
+      var new_title = translate.substr(translate.length - 5) !== '.tmpl' ? translate + '.tmpl' : translate;
+      $(this).val(new_title);
+      var alert_msg = 'Данное название шаблона - не уникально, пожалуйста укажите другое';
+
+      if ( $(this).val() !== '' && ( orig_name == new_title || exist_templates.indexOf(new_title) == -1 ) ){
+        $(this).removeClass('invalid');
+        $('#hint_checked ul li:first-child').empty().append('<i class="material-icons">done</i>');
+      }
+
+      else {
+        if ( $(this).val() !== '' ) 
+          alert( alert_msg ); //+ ' Index: ' + values2.indexOf(new_title);
+      }
+
+    })
+
+/* Check text */
+    editor.on('change', function() {
+      $('#editortext').val(editor.getValue());
+
+      if ( $('#editortext').val() == '' )
+        $('#hint_checked ul li:nth-child(2)').empty().append('<br/>');
+    
+      else {
+        {% verbatim %}
+        if ($('#editortext').val().indexOf("{% extends '/templates/main.tmpl' %}") >= 0)
+          $('#hint_checked ul li:nth-child(2)').empty().append('<i class="material-icons">done</i>');
+        
+        else{
+          var text = "{% extends '/templates/main.tmpl' %}\n" + $('#editortext').val();
+          $('#editortext').val(text);
+          editor.setValue(text);
+          $('#hint_checked ul li:nth-child(2)').empty().append('<i class="material-icons">done</i>');
+        }
+        {% endverbatim %}
+      }
+    });
+  </script>
+  
+  <script>
+    $(document).ready(function(){
+          var parm_to_form = '<input type="hidden" name="parm" value="{{ parm }}">'
+            + '<input type="hidden" name="current" value="{{ current }}">';
+          $("#form_tmpl").prepend(parm_to_form);
+
+      {% if parm == "edit" %}
+          $("#hint_checked ul li:not(:last-child)").empty().append("<i class='material-icons'>done</i>");
+          $("button#save_button").attr("disabled", false);
+          $("button#save_button").removeClass("inactive").addClass("active");
+          $("input#pages_title").val("{{ db.template_name }}");
+          $("#form_tmpl").prepend("<input type='hidden' name='twig_id' value='{{ db.twig_id }}'>");
+          $("#form_tmpl").prepend("<input type='hidden' name='orig_name' value='" + orig_name + "'>");
+          var text = {{ db.source| json_encode | raw }};
+      {% else %}
+          {% verbatim %} 
+            var text = "{% extends '/templates/main.tmpl' %} \n" +
+              "\n{% block title %}\n\n{% endblock %}\n" +
+              "\n\n{% block head %}\n\n{% endblock %}\n" +
+              "\n\n{% block meta_description %}{% spaceless %}\n\n{% endspaceless %}{% endblock %}\n" +
+              "\n\n{% block meta_keywords %}{% spaceless %}\n\n{% endspaceless %}{% endblock %}\n" +
+              "\n\n{% block hero %}\n\n{% endblock %}\n" +
+              "\n\n{% block content %}\n\n{% endblock %}\n" +
+              "\n\n{% block js %}\n\n{% endblock %}\n";
+          {% endverbatim %}
+          $("button#save_button").attr("disabled", true);
+      {% endif %}
+          $('#editortext').val(text);
+          editor.setValue(text, -1);   
+    });
+  </script>
+{% endblock %}

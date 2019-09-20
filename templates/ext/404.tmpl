@@ -1,0 +1,83 @@
+{% extends '/templates/main.tmpl' %}
+
+{% block title %}Страница не найдена{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ '/style/' ~ css_path }}404.css">
+{% endblock %}
+
+{% block hero %}
+  <div class="logo">
+    <div class="logo-cont">
+      <div class="logo-img">
+        <svg id="svg"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 721 218">
+          <defs>
+            <linearGradient id="grad1" gradientUnits="userSpaceOnUse">
+              <stop id="stop1" offset="0%"/>
+              <stop id="stop2" offset="100%"/>
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%"/>
+          <g id="logo">
+            <path d="M641.9,16.1Q624.9.4,600.9.4H547.1V107.3h53.8q24.1,0,41.1-15.7t17-37.9Q659,31.7,641.9,16.1ZM613.3,63.9A15.5,15.5,0,0,1,602.4,68H588.2V39.7h14.2a15.5,15.5,0,0,1,10.8,4.1,13.4,13.4,0,0,1,1.1,18.9l-1.1,1.1ZM495.1,68V79h38.7v28.3H454.2V.4h79.6V28.3H495.1V39.7h38.7V68ZM360,.4h40.8V79h38.9v28.3H360ZM258,60.3,211.1.4,253.8,0l24.6,29.8L303.4,0l42.2.4L298.7,60.3v47.1H258ZM65.1.4h40.6l24.2,28.9L153.6.4h40.9V107.3H153.9V46.1L129.8,75.9,105.7,46.1v61.2H65.1Z"/><path d="M29.2,188.6v5H56.4V218H.8V134.8H56.4V159H29.2v5.6H56.4v24Z"/><path d="M109.9,218,95.7,199.5V218H67.2V134.8h40.7a33.8,33.8,0,0,1,24,9.4,30.7,30.7,0,0,1,0,45.2,33.2,33.2,0,0,1-5,4l18,24.6ZM105,175.2a7.3,7.3,0,0,0,5.5-2.5,8.7,8.7,0,0,0,0-11.9,7.3,7.3,0,0,0-5.5-2.5H95.7v16.8Z"/><path d="M196.9,218l-14.2-18.5V218H154.2V134.8h40.7a33.8,33.8,0,0,1,24,9.4,30.7,30.7,0,0,1,0,45.2,33.2,33.2,0,0,1-5,4l18,24.6ZM192,175.2a7.3,7.3,0,0,0,5.5-2.5,8.7,8.7,0,0,0,0-11.9,7.3,7.3,0,0,0-5.5-2.5h-9.2v16.8Z"/><path d="M249,205.8a42.3,42.3,0,0,1,0-58.8,39.9,39.9,0,0,1,57.4,0,42.3,42.3,0,0,1,0,58.8,39.9,39.9,0,0,1-57.4,0Zm28.7-16.1a11.4,11.4,0,0,0,8.6-3.8,13,13,0,0,0,3.6-9.2,12.8,12.8,0,0,0-3.6-9.2,11.5,11.5,0,0,0-8.6-3.8,11.3,11.3,0,0,0-8.6,3.8,12.9,12.9,0,0,0-3.5,9.2,13.1,13.1,0,0,0,3.5,9.2A11.2,11.2,0,0,0,277.6,189.7Z"/><path d="M373.8,218l-14.2-18.5V218H331V134.8h40.7a33.8,33.8,0,0,1,24,9.4,30.7,30.7,0,0,1,0,45.2,33.2,33.2,0,0,1-5,4l18,24.6Zm-4.9-42.8a7.3,7.3,0,0,0,5.5-2.5,8.7,8.7,0,0,0,0-11.9,7.3,7.3,0,0,0-5.5-2.5h-9.2v16.8Z"/><path d="M454.6,191.1V134.8h28.4v28h22.8v-28h28.3V218H505.9V191.1Z"/><path d="M559,205.8a42.3,42.3,0,0,1,0-58.8,39.9,39.9,0,0,1,57.4,0,42.3,42.3,0,0,1,0,58.8,39.9,39.9,0,0,1-57.4,0Zm28.7-16.1a11.4,11.4,0,0,0,8.6-3.8,13,13,0,0,0,3.6-9.2,12.8,12.8,0,0,0-3.6-9.2,11.5,11.5,0,0,0-8.6-3.8,11.3,11.3,0,0,0-8.6,3.8,12.9,12.9,0,0,0-3.5,9.2,13.1,13.1,0,0,0,3.5,9.2A11.2,11.2,0,0,0,587.7,189.7Z"/><path d="M641.7,191.1V134.8h28.4v28H693v-28h28.3V218H693V191.1Z"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  
+  <div class="hero-banner">
+    <div class="video-overlay"></div>
+    <video autoplay muted loop playsinline id="myVideo"><source src="/img/backgrounds/offices.mp4" type="video/mp4"></video>
+  </div>  
+{% endblock %}
+
+{% block content %}
+<section class="content-container row">
+  <div class="col content-offset"></div>
+  <div class="col center">
+    <div id="error">
+      <h3 class="block-tittle">
+      Данной страницы <span>не</span> существует.
+      </h3>
+      <p id="countdown">Через <span>10 секунд</span> Вы будете автоматически перенаправленны на главную страницу сайта.</p>
+      <p>Если же этого еще не произошло, пожалуйста, <a href="/">нажмите на эту ссылку.</a></p>
+    </div>
+  </div>
+  <div class="col content-offset"></div>
+</section>
+{% endblock %}
+
+{% block js %}
+    <script>
+      var display = document.querySelector('#countdown span');
+
+      function startTimer(duration, display) {
+          var timer = duration -1, minutes, seconds;
+          setInterval(function () {
+              minutes = parseInt(timer / 60, 10)
+              seconds = parseInt(timer % 60, 10);
+      
+              minutes = minutes < 10 ? "0" + minutes : minutes;
+          if ( seconds <= 1 )
+            seconds = seconds + ' секунду';
+          else if  ( seconds <= 4 )
+            seconds = seconds + ' секунды';
+          else 
+            seconds = seconds + ' секунд';
+
+              display.textContent = seconds;
+      
+              if (--timer < 1) {
+            window.location.href = '/';
+              }
+          }, 1000);
+      }
+
+      $(document).ready(function(){
+        var vid = document.getElementById("myVideo");
+        vid.playbackRate = 0.5;
+        startTimer(10, display);
+      });
+    </script>
+{% endblock %}
